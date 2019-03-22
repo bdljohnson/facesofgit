@@ -2,27 +2,50 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-class App extends Component {
+class FacesOfGithub extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+			urls: [],
+      display: false
+    }
+    this.generate = this.generate.bind(this);
+  }
+  
+  generate(){
+  	let ids = [];
+  	for(let i = 0; i < 40; i++){
+      let id = Math.floor(100000 + Math.random() * 90000);
+      ids.push(id);
+    }
+		let urls = ids.map(id=>`https://avatars1.githubusercontent.com/u/${id}?s=200&v=4`)
+    
+    this.setState({
+    	urls: urls,
+      display: true
+    })
+  }
+  
+  
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
+			<div id="container">
+			  <button onClick={this.generate}>Generate</button>
+        {this.state.display && <ImageGrid urls={this.state.urls} />}
+			</div>
+    )
   }
 }
 
-export default App;
+class ImageGrid extends React.Component {
+	render(){
+
+    let images = this.props.urls.map(url=><img src={url} />)
+    return (
+      <div className="image-grid">{images}</div>
+    )
+  }
+}
+
+
+export default FacesofGithub;
