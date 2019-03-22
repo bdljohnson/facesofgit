@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 
-class FacesOfGithub extends React.Component {
+class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -47,4 +47,4 @@ class ImageGrid extends React.Component {
 }
 
 
-export default FacesofGithub;
+export default App;
