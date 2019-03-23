@@ -4,6 +4,7 @@ class Recog {
     constructor(){
         // Load models here
         this.configure();
+        
     }
     detect(urls){
         console.log('Here with urls')
@@ -21,7 +22,7 @@ class Recog {
     }
     async image(uri, resolve){
                 let face = await faceapi.fetchImage(uri);
-                let detected = await faceapi.detectSingleFace(face);
+                let detected = await faceapi.detectSingleFace(face, this.options);
                 console.log(detected);
                 if(!!detected){
                     this.detectedUrls.push(uri)
@@ -30,7 +31,8 @@ class Recog {
         
     }
     async configure(){
-        await faceapi.nets.ssdMobilenetv1.loadFromUri('/models');
+        await faceapi.loadTinyFaceDetectorModel('/models')
+        this.options = new faceapi.TinyFaceDetectorOptions();
     }
 }
 

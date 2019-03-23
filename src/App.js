@@ -17,6 +17,10 @@ class App extends React.Component {
   }
   
   generate(){
+    this.setState({
+      display: true,
+      loading: true
+    })
   	let ids = [];
   	for(let i = 0; i < 40; i++){
       let id = Math.floor(100000 + Math.random() * 90000);
@@ -28,7 +32,8 @@ class App extends React.Component {
       console.log(detected);
       this.setState({
         urls: detected,
-        display: true
+        display: true,
+        loading: false
       })
     })
   }
@@ -38,7 +43,9 @@ class App extends React.Component {
     return (
 			<div id="container">
 			  <button onClick={this.generate}>Generate</button>
-        {this.state.display && <ImageGrid urls={this.state.urls} />}
+        {this.state.display && 
+        this.state.loading ? <h1>Loading...</h1> :
+        <ImageGrid urls={this.state.urls} />}
 			</div>
     )
   }
