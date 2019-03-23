@@ -1,14 +1,19 @@
 import React, { Component } from 'react';
-
+import Recog from './helpers/recog';
 
 class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
 			urls: [],
-      display: false
+      display: false,
+      length: 40,
+      found: 0,
+      loading: true,
+      images: []
     }
     this.generate = this.generate.bind(this);
+    this.recog = new Recog();
   }
   
   generate(){
@@ -18,15 +23,18 @@ class App extends React.Component {
       ids.push(id);
     }
 		let urls = ids.map(id=>`https://avatars1.githubusercontent.com/u/${id}?s=200&v=4`)
-    
-    this.setState({
-    	urls: urls,
-      display: true
+
+    this.recog.detect(urls).then(detected => {
+      console.log(detected);
+      this.setState({
+        urls: detected,
+        display: true
+      })
     })
   }
   
-  
   render() {
+
     return (
 			<div id="container">
 			  <button onClick={this.generate}>Generate</button>
@@ -39,7 +47,7 @@ class App extends React.Component {
 class ImageGrid extends React.Component {
 	render(){
 
-    let images = this.props.urls.map(url=><img src={url} />)
+    let images = this.props.urls.map((url, i)=><img src={url} alt={url} key={i}/>)
     return (
       <div className="image-grid">{images}</div>
     )
