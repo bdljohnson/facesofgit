@@ -10,7 +10,10 @@ class App extends React.Component {
       length: 40,
       found: 0,
       loading: true,
-      images: []
+      images: [],
+      initialLoad: true,
+      counter: 0,
+      max: 40
     }
     this.generate = this.generate.bind(this);
     this.recog = new Recog();
@@ -19,7 +22,8 @@ class App extends React.Component {
   generate(){
     this.setState({
       display: true,
-      loading: true
+      loading: true,
+      counter: 0
     })
   	let ids = [];
   	for(let i = 0; i < 40; i++){
@@ -28,23 +32,31 @@ class App extends React.Component {
     }
 		let urls = ids.map(id=>`https://avatars1.githubusercontent.com/u/${id}?s=200&v=4`)
 
-    this.recog.detect(urls).then(detected => {
+    this.recog.detect(urls, this.counter.bind(this)).then(detected => {
       console.log(detected);
       this.setState({
         urls: detected,
         display: true,
-        loading: false
+        loading: false,
+        hits: detected.length
       })
     })
   }
-  
+  counter(){
+    this.setState({
+      counter: this.state.counter + 1
+    })
+  }
+  componentWillMount(){
+    this.loadTimer = setTimeout( _ => this.setState({initialLoad: false}), 2000)
+  }
   render() {
 
     return (
 			<div id="container">
-			  <button onClick={this.generate}>Generate</button>
+        {this.state.initialLoad ? <button disabled>Generate</button> : <button onClick={this.generate}>Generate</button>}
         {this.state.display && 
-        this.state.loading ? <h1>Loading...</h1> :
+        this.state.loading ? <div><h1>Loading...</h1> <span>Proccessed: {this.state.counter}/{this.state.max}</span></div> :
         <ImageGrid urls={this.state.urls} />}
 			</div>
     )

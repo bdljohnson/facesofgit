@@ -6,7 +6,7 @@ class Recog {
         this.configure();
         
     }
-    detect(urls){
+    detect(urls, counter){
         console.log('Here with urls')
         return new Promise(async (resolve, reject)=>{
             console.log('Am I alive')
@@ -14,19 +14,20 @@ class Recog {
             for(let i = 0; i < urls.length; i++){
                 console.log('Inside promise loop')
                 await new Promise((resolve, reject)=>{
-                    this.image(urls[i], resolve)
+                    this.image(urls[i], resolve, counter)
                 })
             }
             resolve(this.detectedUrls);
         })
     }
-    async image(uri, resolve){
+    async image(uri, resolve, counter){
                 let face = await faceapi.fetchImage(uri);
                 let detected = await faceapi.detectSingleFace(face, this.options);
                 console.log(detected);
                 if(!!detected){
                     this.detectedUrls.push(uri)
                 }
+                counter();
                 resolve(detected);
         
     }
