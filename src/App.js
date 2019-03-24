@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import Recog from './helpers/recog';
+import { ClipLoader } from 'react-spinners'
 
-class App extends React.Component {
+class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -56,7 +57,7 @@ class App extends React.Component {
 			<div id="container">
         {this.state.initialLoad ? <button disabled>Generate</button> : <button onClick={this.generate}>Generate</button>}
         {this.state.display && 
-        this.state.loading ? <div><h1>Loading...</h1> <span>Proccessed: {this.state.counter}/{this.state.max}</span></div> :
+        this.state.loading ? <div className="loading-container"><ClipLoader sizeUnit={"px"} size={100} /> <span>Processed: {this.state.counter}/{this.state.max}</span></div> :
         <ImageGrid urls={this.state.urls} />}
 			</div>
     )

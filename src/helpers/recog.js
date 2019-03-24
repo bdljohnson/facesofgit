@@ -6,13 +6,15 @@ class Recog {
         this.configure();
         
     }
+    /**
+     * 
+     * @param {Array} urls Array of github profile photos to run recognition on.
+     * @param {Function} counter Callback to run for each image proccessed.
+     */
     detect(urls, counter){
-        console.log('Here with urls')
         return new Promise(async (resolve, reject)=>{
-            console.log('Am I alive')
             this.detectedUrls = [];
             for(let i = 0; i < urls.length; i++){
-                console.log('Inside promise loop')
                 await new Promise((resolve, reject)=>{
                     this.image(urls[i], resolve, counter)
                 })
