@@ -14,9 +14,11 @@ class App extends Component {
       images: [],
       initialLoad: true,
       counter: 0,
-      max: 40
+      hits: 0,
+      max: 100
     }
     this.generate = this.generate.bind(this);
+    this.hitcounter = this.hitcounter.bind(this);
     this.recog = new Recog();
   }
   
@@ -24,16 +26,17 @@ class App extends Component {
     this.setState({
       display: true,
       loading: true,
-      counter: 0
+      counter: 0,
+      hits: 0
     })
   	let ids = [];
-  	for(let i = 0; i < 40; i++){
+  	for(let i = 0; i < this.state.max; i++){
       let id = Math.floor(100000 + Math.random() * 90000);
       ids.push(id);
     }
 		let urls = ids.map(id=>`https://avatars1.githubusercontent.com/u/${id}?s=200&v=4`)
 
-    this.recog.detect(urls, this.counter.bind(this)).then(detected => {
+    this.recog.detect(urls, this.counter.bind(this), this.hitcounter).then(detected => {
       console.log(detected);
       this.setState({
         urls: detected,
@@ -48,6 +51,11 @@ class App extends Component {
       counter: this.state.counter + 1
     })
   }
+  hitcounter(){
+    this.setState({
+      hits: this.state.hits + 1
+    })
+  }
   componentWillMount(){
     this.loadTimer = setTimeout( _ => this.setState({initialLoad: false}), 2000)
   }
@@ -57,7 +65,7 @@ class App extends Component {
 			<div id="container">
         {this.state.initialLoad ? <button disabled>Generate</button> : <button onClick={this.generate}>Generate</button>}
         {this.state.display && 
-        this.state.loading ? <div className="loading-container"><ClipLoader sizeUnit={"px"} size={100} /> <span>Processed: {this.state.counter}/{this.state.max}</span></div> :
+        this.state.loading ? <div className="loading-container"><ClipLoader sizeUnit={"px"} size={100} /> <span>Processed: {this.state.counter}/{this.state.max}</span><span>Hits: {this.state.hits}</span></div> :
         <ImageGrid urls={this.state.urls} />}
 			</div>
     )
