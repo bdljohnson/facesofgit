@@ -11,27 +11,20 @@ class Recog {
      * @param {Array} urls Array of github profile photos to run recognition on.
      * @param {Function} counter Callback to run for each image proccessed.
      */
-    detect(urls, counter, hitcounter){
-        return new Promise(async (resolve, reject)=>{
-            this.detectedUrls = [];
-            for(let i = 0; i < urls.length; i++){
-                await new Promise((resolve, reject)=>{
-                    this.image(urls[i], resolve, counter, hitcounter)
-                })
-            }
-            resolve(this.detectedUrls);
-        })
+    detect(urls, counter, hitcounter, updateUrls){
+        for(let i = 0; i < urls.length; i++){
+                this.image(urls[i], counter, hitcounter, updateUrls)
+        }
     }
-    async image(uri, resolve, counter, hitcounter){
+    async image(uri, counter, hitcounter, updateUrls){
                 let face = await faceapi.fetchImage(uri);
                 let detected = await faceapi.detectSingleFace(face, this.options);
                 console.log(detected);
                 if(!!detected){
-                    this.detectedUrls.push(uri)
+                    updateUrls(uri);
                     hitcounter();
                 }
                 counter();
-                resolve(detected);
         
     }
     async configure(){

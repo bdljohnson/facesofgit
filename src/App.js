@@ -15,10 +15,11 @@ class App extends Component {
       initialLoad: true,
       counter: 0,
       hits: 0,
-      max: 100
+      max: 200
     }
     this.generate = this.generate.bind(this);
     this.hitcounter = this.hitcounter.bind(this);
+    this.updateUrls = this.updateUrls.bind(this);
     this.recog = new Recog();
   }
   
@@ -27,7 +28,8 @@ class App extends Component {
       display: true,
       loading: true,
       counter: 0,
-      hits: 0
+      hits: 0,
+      images: []
     })
   	let ids = [];
   	for(let i = 0; i < this.state.max; i++){
@@ -36,15 +38,7 @@ class App extends Component {
     }
 		let urls = ids.map(id=>`https://avatars1.githubusercontent.com/u/${id}?s=200&v=4`)
 
-    this.recog.detect(urls, this.counter.bind(this), this.hitcounter).then(detected => {
-      console.log(detected);
-      this.setState({
-        urls: detected,
-        display: true,
-        loading: false,
-        hits: detected.length
-      })
-    })
+    this.recog.detect(urls, this.counter.bind(this), this.hitcounter, this.updateUrls)
   }
   counter(){
     this.setState({
@@ -59,14 +53,21 @@ class App extends Component {
   componentWillMount(){
     this.loadTimer = setTimeout( _ => this.setState({initialLoad: false}), 2000)
   }
+  /**
+   * 
+   * @param {Number} id The id of the image hit
+   * @param {Object} options Options containing the status
+   */
+  updateUrls(id){
+    this.setState((prevState)=>({images: [...prevState.images, id], loading: false}))
+  }
   render() {
 
     return (
 			<div id="container">
-        {this.state.initialLoad ? <button disabled>Generate</button> : <button onClick={this.generate}>Generate</button>}
+    {this.state.initialLoad ? <button disabled>Generate</button> : (<div className="top-container"><span>Processed: {this.state.counter}/{this.state.max}</span><button onClick={this.generate}>Generate</button><span>Hits: {this.state.hits}</span></div>)}
         {this.state.display && 
-        this.state.loading ? <div className="loading-container"><ClipLoader sizeUnit={"px"} size={100} /> <span>Processed: {this.state.counter}/{this.state.max}</span><span>Hits: {this.state.hits}</span></div> :
-        <ImageGrid urls={this.state.urls} />}
+        <ImageGrid urls={this.state.images} />}
 			</div>
     )
   }
