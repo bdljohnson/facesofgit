@@ -33,7 +33,7 @@ class App extends Component {
     })
   	let ids = [];
   	for(let i = 0; i < this.state.max; i++){
-      let id = Math.floor(100000 + Math.random() * 90000);
+      let id = Math.floor(Math.random() * 20000000) + 1;
       ids.push(id);
     }
 		let urls = ids.map(id=>`https://avatars1.githubusercontent.com/u/${id}?s=200&v=4`)
